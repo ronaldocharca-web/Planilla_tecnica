@@ -153,6 +153,19 @@ async function downloadWord() {
       if (!span) { span = modelValueCell.ownerDocument.createElementNS(WORD_NS, 'w:gridSpan'); properties.insertBefore(span, properties.children[1] || null); }
       span.setAttributeNS(WORD_NS, 'w:val', '3');
     }
+    const cellProperties = directWordChildren(modelValueCell, 'tcPr')[0];
+    if (cellProperties) {
+      let borders = directWordChildren(cellProperties, 'tcBorders')[0];
+      if (!borders) { borders = modelValueCell.ownerDocument.createElementNS(WORD_NS, 'w:tcBorders'); cellProperties.appendChild(borders); }
+      for (const side of ['top', 'left', 'bottom', 'right']) {
+        let edge = directWordChildren(borders, side)[0];
+        if (!edge) { edge = modelValueCell.ownerDocument.createElementNS(WORD_NS, `w:${side}`); borders.appendChild(edge); }
+        edge.setAttributeNS(WORD_NS, 'w:val', 'single');
+        edge.setAttributeNS(WORD_NS, 'w:sz', '4');
+        edge.setAttributeNS(WORD_NS, 'w:space', '0');
+        edge.setAttributeNS(WORD_NS, 'w:color', '000000');
+      }
+    }
     general[3][2].remove();
     general[3][3].remove();
   }

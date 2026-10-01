@@ -55,3 +55,6 @@
 .pdf-export-copy .doc-table > .general-row{grid-template-columns:minmax(108px,1.05fr) minmax(110px,1.95fr) minmax(108px,1.05fr) minmax(110px,1.95fr)}
 .pdf-export-copy .doc-table > .wide-row{grid-template-columns:minmax(120px,1.05fr) minmax(380px,6.95fr)}
 .download-actions{grid-template-columns:1fr}
+.document-preview .doc-table > .general-row{border-bottom:1px solid #000!important}
+.document-preview .doc-table > .general-row:last-child{border-bottom:0!important}
+.document-preview .doc-table > .general-row > .doc-value:last-child{border-right:1px solid #000!important}
