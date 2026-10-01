@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Generador de informes técnicos informáticos" />
+    <title>Informe Técnico | Generador</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231b5cff'/%3E%3Cpath d='M17 15h22l8 8v26H17z' fill='none' stroke='white' stroke-width='4'/%3E%3Cpath d='M38 15v10h9M24 35h16M24 43h12' stroke='white' stroke-width='4' fill='none'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div class="brand"><span class="brand-mark">IT</span><div><p class="eyebrow">SOPORTE INFORMÁTICO</p><h1>Generador de informes</h1></div></div>
+        <button class="ghost-button" id="clearButton" type="button">Limpiar formulario</button>
+      </header>
+
+      <section class="intro"><div><p class="eyebrow blue">NUEVO INFORME</p><h2>Documenta el estado de cada equipo</h2><p>Completa los datos y descarga un informe Word con el formato técnico de tu plantilla.</p></div><div class="progress-card"><span>Progreso</span><strong id="progressText">0%</strong><div class="progress"><i id="progressBar"></i></div></div></section>
+
+      <div class="workspace">
+        <form id="reportForm" class="form-column">
+          <section class="card"><div class="section-heading"><span class="number">01</span><div><h3>Datos generales</h3><p>Identificación del equipo y del responsable.</p></div></div><div class="field-grid">
+            <label>Tipo de activo<input name="tipoActivo" placeholder="Laptop, PC, impresora..." /></label>
+            <label>Usuario<input name="usuario" placeholder="Nombre del usuario" /></label>
+            <label>Área<input name="area" placeholder="Sistemas, Administración..." /></label>
+            <label>Marca<input name="marca" placeholder="Dell, HP, Lenovo..." /></label>
+            <label>Modelo<input name="modelo" placeholder="Modelo del equipo" /></label>
+            <label>Código de revisión<input name="codigoRevision" placeholder="Ej. REV-2026-001" /></label>
+            <label>Número de serie<input name="serie" placeholder="S/N" /></label>
+            <label>Procesador<input name="procesador" placeholder="Intel Core i7..." /></label>
+            <label>Memoria RAM (GB)<input name="ram" type="number" min="1" step="1" placeholder="Ej. 8" /></label>
+            <label>Tipo de disco<select name="tipoAlmacenamiento"><option value="">Selecciona un tipo</option><option>HDD</option><option>SSD SATA</option><option>SSD NVMe (M.2)</option><option>SSHD híbrido (HDD + SSD)</option><option>eMMC</option><option>Otro tipo</option></select></label>
+            <label>Capacidad de almacenamiento<input name="capacidadAlmacenamiento" type="number" min="1" step="any" placeholder="Ej. 512" /></label>
+            <label>Unidad<select name="unidadAlmacenamiento"><option value="GB">GB</option><option value="TB">TB</option></select></label>
+            <label>Técnico responsable<input name="tecnico" placeholder="Nombre del técnico" /></label>
+            <label>Fecha del informe<input name="fecha" type="date" /></label>
+          </div></section>
+
+          <section class="card"><div class="section-heading"><span class="number">02</span><div><h3>Diagnóstico</h3><p>Describe la falla y las verificaciones realizadas.</p></div></div><label>Problema reportado<textarea name="problema" rows="3" placeholder="¿Qué problema presenta el equipo?"></textarea></label><label>Pruebas realizadas<textarea name="pruebas" rows="6" placeholder="Enumera las pruebas, revisiones y acciones ejecutadas."></textarea></label></section>
+
+          <section class="card"><div class="section-heading"><span class="number">03</span><div><h3>Resultados</h3><p>Registra el estado final y las recomendaciones.</p></div></div><label>Conclusiones<textarea name="conclusiones" rows="6" placeholder="Describe el resultado final del mantenimiento."></textarea></label><label>Recomendaciones<textarea name="recomendaciones" rows="5" placeholder="Indica sugerencias para conservar o mejorar el equipo."></textarea></label><label>Observaciones<textarea name="observaciones" rows="3" placeholder="Información adicional."></textarea></label></section>
+
+          <section class="card"><div class="section-heading"><span class="number">04</span><div><h3>Firmas</h3><p>Responsables de la revisión del informe.</p></div></div><div class="field-grid"><label>VoBo técnico<input name="firmaTecnico" placeholder="Nombre del técnico" /></label><label>VoBo supervisor<input name="firmaSupervisor" placeholder="Nombre del supervisor" /></label></div></section>
+          <div class="download-actions"><button class="primary-button" type="submit">Descargar Word <span>↓</span></button></div>
+        </form>
+
+        <aside class="preview-column"><div class="preview-sticky"><div class="preview-header"><div><p class="eyebrow blue">VISTA PREVIA</p><h3>Informe técnico</h3></div><span class="status-dot">Borrador</span></div><article class="document-preview" id="preview"><div class="doc-logos"><img src="assets/logo-turismo.png" alt="Logo Turismo" /><img src="assets/logo-sistemas.png" alt="Logo Unidad de Sistemas" /></div><div class="doc-title"><span>INFORME TÉCNICO</span><small id="previewDate">Fecha pendiente</small></div><div class="doc-section"><h4>I. Datos Generales</h4><div class="doc-table" id="previewGeneral"></div></div><div class="doc-section"><h4>II. Diagnóstico</h4><div class="doc-block"><b>II.1. Problema reportado</b><p id="previewProblema">Completa el problema reportado.</p></div><div class="doc-block"><b>II.2. Pruebas realizadas</b><p id="previewPruebas">Completa las pruebas realizadas.</p></div></div><div class="doc-section"><h4>III. Resultados</h4><div class="doc-block"><b>III.1. Conclusiones</b><p id="previewConclusiones">Completa las conclusiones.</p></div><div class="doc-block"><b>III.2. Recomendaciones</b><p id="previewRecomendaciones">Completa las recomendaciones.</p></div></div><div class="doc-section"><h4>IV. Observaciones</h4><div class="doc-block"><b>Observaciones</b><p id="previewObservaciones">Completa las observaciones.</p></div></div><div class="signature-row"><div>____________________<small id="previewFirmaTecnico">VoBo Técnico</small></div><div>____________________<small id="previewFirmaSupervisor">VoBo Supervisor</small></div></div></article></div></aside>
+      </div>
+    </main>
+    <div class="toast" id="toast" role="status"></div>
+    <script src="app.js"></script>
+  </body>
+</html>
