@@ -16,7 +16,7 @@
     <main class="shell">
       <header class="topbar">
         <div class="brand"><span class="brand-mark">IT</span><div><p class="eyebrow">SOPORTE INFORMÁTICO</p><h1>Generador de informes</h1></div></div>
-        <button class="ghost-button" id="clearButton" type="button">Limpiar formulario</button>
+        <div class="topbar-actions"><button class="ghost-button" id="manualButton" type="button" popovertarget="manualDialog" aria-controls="manualDialog">Manual <span aria-hidden="true">?</span></button><button class="ghost-button" id="clearButton" type="button">Limpiar formulario</button></div>
       </header>
 
       <section class="intro"><div><p class="eyebrow blue">NUEVO INFORME</p><h2>Documenta el estado de cada equipo</h2><p>Completa los datos y descarga un informe Word con el formato técnico de tu plantilla.</p></div><div class="progress-card"><span>Progreso</span><strong id="progressText">0%</strong><div class="progress"><i id="progressBar"></i></div></div></section>
@@ -51,6 +51,23 @@
         <aside class="preview-column"><div class="preview-sticky"><div class="preview-header"><div><p class="eyebrow blue">VISTA PREVIA</p><h3>Informe técnico</h3></div><span class="status-dot">Borrador</span></div><article class="document-preview" id="preview"><div class="doc-logos"><img src="assets/logo-turismo.png" alt="Logo Turismo" /><img src="assets/logo-sistemas.png" alt="Logo Unidad de Sistemas" /></div><div class="doc-title"><span>INFORME TÉCNICO</span><small id="previewDate">Fecha pendiente</small></div><div class="doc-section"><h4>I. Datos Generales</h4><div class="doc-table" id="previewGeneral"></div></div><div class="doc-section"><h4>II. Diagnóstico</h4><div class="doc-block"><b>II.1. Problema reportado</b><p id="previewProblema">Completa el problema reportado.</p></div><div class="doc-block"><b>II.2. Pruebas realizadas</b><p id="previewPruebas">Completa las pruebas realizadas.</p></div></div><div class="doc-section"><h4>III. Resultados</h4><div class="doc-block"><b>III.1. Conclusiones</b><p id="previewConclusiones">Completa las conclusiones.</p></div><div class="doc-block"><b>III.2. Recomendaciones</b><p id="previewRecomendaciones">Completa las recomendaciones.</p></div></div><div class="doc-section"><h4>IV. Observaciones</h4><div class="doc-block"><b>Observaciones</b><p id="previewObservaciones">Completa las observaciones.</p></div></div><div class="signature-row"><div>____________________<small id="previewFirmaTecnico">VoBo Técnico</small></div><div>____________________<small id="previewFirmaSupervisor">VoBo Supervisor</small></div></div></article></div></aside>
       </div>
     </main>
+    <div class="manual-dialog" id="manualDialog" popover="manual" aria-labelledby="manualTitle">
+      <div class="manual-content">
+        <header class="manual-header"><div><p class="eyebrow blue">GUÍA DE USO</p><h2 id="manualTitle">Cómo crear un informe</h2></div><button class="manual-close" id="closeManualButton" type="button" popovertarget="manualDialog" popovertargetaction="hide" aria-label="Cerrar manual">×</button></header>
+        <p class="manual-lead">Completa los datos del equipo y del mantenimiento. La página mantiene una vista previa y prepara un documento Word con la plantilla institucional.</p>
+        <ol class="manual-steps">
+          <li><span class="manual-step-number">01</span><div><h3>Espera el código de revisión</h3><p>Con Supabase conectado, el código se asigna solo. Espera el mensaje <strong>Código único asignado globalmente</strong> antes de descargar. No lo cambies: identifica este informe.</p></div></li>
+          <li><span class="manual-step-number">02</span><div><h3>Identifica el equipo</h3><p>Ingresa tipo de activo, usuario, área, marca, modelo, serie y procesador. En RAM escribe solo la cantidad en GB, por ejemplo <strong>8</strong>.</p></div></li>
+          <li><span class="manual-step-number">03</span><div><h3>Describe el almacenamiento</h3><p>Selecciona HDD, SSD SATA, SSD NVMe, SSHD, eMMC u otro. Escribe la capacidad, por ejemplo <strong>512</strong>, y elige GB o TB.</p></div></li>
+          <li><span class="manual-step-number">04</span><div><h3>Registra el trabajo realizado</h3><p>Completa problema reportado, pruebas, conclusiones, recomendaciones y observaciones. Puedes escribir varias líneas. Añade el técnico, la fecha y los nombres para las firmas.</p></div></li>
+          <li><span class="manual-step-number">05</span><div><h3>Revisa la vista previa</h3><p>La hoja se actualiza mientras escribes. Comprueba los datos, la fecha, el código y los textos largos. El porcentaje indica cuántos campos tienen contenido; no es necesario llegar a 100% para descargar.</p></div></li>
+          <li><span class="manual-step-number">06</span><div><h3>Descarga el informe</h3><p>Pulsa <strong>Descargar Word</strong>. Se guardará un archivo DOCX con el nombre del código de revisión. Ábrelo en Word o LibreOffice para revisar el documento final.</p></div></li>
+          <li><span class="manual-step-number">07</span><div><h3>Empieza otro informe</h3><p>Tras descargar, se reserva automáticamente el siguiente código. <strong>Limpiar formulario</strong> borra los demás datos pero conserva el código del informe actual.</p></div></li>
+        </ol>
+        <section class="manual-notes"><h3>Ten en cuenta</h3><ul><li>La página genera Word; no genera PDF.</li><li>Los informes no se guardan en una cuenta ni en Supabase. La descarga queda en tu dispositivo.</li><li>Los códigos se reservan al abrir la página. Si cierras o recargas antes de descargar, puede quedar un número sin usar.</li><li>Si aparece un error al reservar el código, revisa tu conexión y vuelve a cargar la página. No inventes un código cuando el contador global está configurado.</li></ul></section>
+        <footer class="manual-footer"><span>¿Listo para completar el formulario?</span><button class="primary-button" id="manualDoneButton" type="button" popovertarget="manualDialog" popovertargetaction="hide">Entendido</button></footer>
+      </div>
+    </div>
     <div class="toast" id="toast" role="status"></div>
     <script src="supabase-config.js"></script>
     <script src="app.js"></script>
