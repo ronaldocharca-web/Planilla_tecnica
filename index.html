@@ -6,6 +6,9 @@
     <meta name="description" content="Generador de informes técnicos informáticos" />
     <title>Informe Técnico | Generador</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231b5cff'/%3E%3Cpath d='M17 15h22l8 8v26H17z' fill='none' stroke='white' stroke-width='4'/%3E%3Cpath d='M38 15v10h9M24 35h16M24 43h12' stroke='white' stroke-width='4' fill='none'/%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400..700&family=Outfit:wght@400..800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
     <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   </head>
@@ -26,7 +29,7 @@
             <label>Área<input name="area" placeholder="Sistemas, Administración..." /></label>
             <label>Marca<input name="marca" placeholder="Dell, HP, Lenovo..." /></label>
             <label>Modelo<input name="modelo" placeholder="Modelo del equipo" /></label>
-            <label>Código de revisión<input name="codigoRevision" placeholder="Ej. REV-2026-001" /></label>
+            <label>Código de revisión<input name="codigoRevision" placeholder="Ej. CT-MNT-2026-001" required /><small class="code-status" id="codeStatus" role="status"></small></label>
             <label>Número de serie<input name="serie" placeholder="S/N" /></label>
             <label>Procesador<input name="procesador" placeholder="Intel Core i7..." /></label>
             <label>Memoria RAM (GB)<input name="ram" type="number" min="1" step="1" placeholder="Ej. 8" /></label>
@@ -49,6 +52,7 @@
       </div>
     </main>
     <div class="toast" id="toast" role="status"></div>
+    <script src="supabase-config.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

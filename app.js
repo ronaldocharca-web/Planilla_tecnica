@@ -2,6 +2,61 @@ const form = document.querySelector('#reportForm');
 const fields = [...form.querySelectorAll('input, textarea, select')];
 const value = name => form.elements[name]?.value.trim() || '';
 const textOr = (value, text) => value || text;
+const codeField = form.elements.codigoRevision;
+const codeStatus = document.querySelector('#codeStatus');
+const submitButton = form.querySelector('button[type="submit"]');
+const counterConfig = window.REPORT_CODE_CONFIG || {};
+const counterUrl = String(counterConfig.url || '').trim().replace(/\/+$/, '');
+const counterKey = String(counterConfig.apiKey || '').trim();
+const globalCounterConfigured = /^https:\/\/[a-z\d-]+\.supabase\.co$/i.test(counterUrl)
+  && counterKey.length > 10 && !/YOUR_|TU_CLAVE|PON_AQUI/i.test(counterKey);
+let reportCodeReady = false;
+
+function setCodeStatus(message, state = '') {
+  codeStatus.textContent = message;
+  codeStatus.className = `code-status${state ? ` is-${state}` : ''}`;
+}
+
+async function reserveReportCode() {
+  const year = new Date().getFullYear();
+  const headers = { 'Content-Type': 'application/json', apikey: counterKey };
+  if (counterKey.startsWith('eyJ')) headers.Authorization = `Bearer ${counterKey}`;
+  const response = await fetch(`${counterUrl}/rest/v1/rpc/next_report_number`, {
+    method: 'POST', headers, body: JSON.stringify({ p_year: year })
+  });
+  if (!response.ok) throw new Error(`Supabase respondió ${response.status}`);
+  const sequence = Number(await response.json());
+  if (!Number.isSafeInteger(sequence) || sequence < 1) throw new Error('Número de secuencia inválido');
+  return `CT-MNT-${year}-${String(sequence).padStart(3, '0')}`;
+}
+
+async function assignNextReportCode() {
+  reportCodeReady = false;
+  codeField.value = '';
+  codeField.readOnly = true;
+  submitButton.disabled = true;
+  setCodeStatus('Reservando un código global…');
+  updatePreview();
+  try {
+    codeField.value = await reserveReportCode();
+    reportCodeReady = true;
+    setCodeStatus('Código único asignado globalmente.', 'success');
+  } catch (error) {
+    setCodeStatus('No se pudo conectar con el contador global. No descargues con un código manual.', 'error');
+    showToast('No se pudo reservar el código global. Revisa la configuración de Supabase.');
+    throw error;
+  } finally {
+    submitButton.disabled = !reportCodeReady;
+    updatePreview();
+  }
+}
+
+if (globalCounterConfigured) {
+  void assignNextReportCode().catch(() => {});
+} else {
+  codeField.readOnly = false;
+  setCodeStatus('Contador global sin configurar; los códigos escritos manualmente podrían repetirse.', 'warning');
+}
 
 const labels = {
   tipoActivo: '1.1. Tipo Activo', procesador: '1.2. Procesador', marca: '1.3. Marca',
@@ -51,7 +106,13 @@ function updatePreview() {
 }
 
 fields.forEach(field => field.addEventListener('input', updatePreview));
-document.querySelector('#clearButton').addEventListener('click', () => { form.reset(); form.elements.fecha.value = new Date().toISOString().slice(0, 10); updatePreview(); });
+document.querySelector('#clearButton').addEventListener('click', () => {
+  const reservedCode = globalCounterConfigured ? codeField.value : '';
+  form.reset();
+  form.elements.fecha.value = new Date().toISOString().slice(0, 10);
+  if (globalCounterConfigured) codeField.value = reservedCode;
+  updatePreview();
+});
 
 function xml(text) { return escapeHtml(text || '—'); }
 const WORD_NS = 'http://schemas.openxmlformats.org/wordprocessingml/2006/main';
@@ -235,6 +296,23 @@ async function downloadWord() {
 }
 
 function showToast(text) { const toast = document.querySelector('#toast'); toast.textContent = text; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 3200); }
-form.addEventListener('submit', event => { event.preventDefault(); downloadWord().catch(() => showToast('No se pudo generar el Word. Revisa que la página esté abierta desde el servidor.')); });
+form.addEventListener('submit', async event => {
+  event.preventDefault();
+  if (!codeField.value.trim()) { showToast('Escribe un código de revisión antes de descargar.'); return; }
+  if (globalCounterConfigured && !reportCodeReady) { showToast('Espera a que se reserve un código global.'); return; }
+  submitButton.disabled = true;
+  try {
+    await downloadWord();
+  } catch (error) {
+    showToast('No se pudo generar el Word. Revisa que la página esté abierta desde el servidor.');
+    submitButton.disabled = false;
+    return;
+  }
+  if (globalCounterConfigured) {
+    await assignNextReportCode().catch(() => {});
+  } else {
+    submitButton.disabled = false;
+  }
+});
 form.elements.fecha.value = new Date().toISOString().slice(0, 10); updatePreview();
 document.querySelectorAll('.document-preview h4').forEach((heading, index) => { heading.textContent = ['I. Datos Generales', 'II. Diagnóstico', 'III. Resultados'][index] || heading.textContent; });

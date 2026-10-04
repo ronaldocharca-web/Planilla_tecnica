@@ -58,3 +58,84 @@
 .document-preview .doc-table > .general-row{border-bottom:1px solid #000!important}
 .document-preview .doc-table > .general-row:last-child{border-bottom:0!important}
 .document-preview .doc-table > .general-row > .doc-value:last-child{border-right:1px solid #000!important}
+
+/* Dark, focused workspace inspired by the reference; the report stays on white paper. */
+:root{color-scheme:dark;--ink:#edf3ff;--muted:#8f9db2;--blue:#4f8cff;--blue-dark:#2f6fe8;--line:#263244;--paper:#101722;--bg:#080b11;--shadow:0 24px 70px rgba(0,0,0,.38)}
+body{min-height:100vh;background:radial-gradient(ellipse at 78% 8%,rgba(31,77,151,.17),transparent 34%),radial-gradient(ellipse at 12% 45%,rgba(23,54,105,.12),transparent 38%),#080b11;color:var(--ink);font-family:"Segoe UI Variable","Aptos","Inter",ui-sans-serif,system-ui,sans-serif;letter-spacing:.005em}
+.shell{max-width:1440px;padding:36px 42px 76px}
+.topbar{margin-bottom:48px}
+.brand-mark{background:linear-gradient(145deg,#69a0ff,#2867eb);box-shadow:0 8px 26px rgba(54,119,255,.28)}
+.eyebrow{color:#8594aa;letter-spacing:.17em}
+.blue{color:#78a8ff}
+h1{color:#f5f8ff;font-size:19px;font-weight:720;letter-spacing:-.035em}
+h2{color:#f6f8fc;font-size:clamp(32px,3.2vw,44px);font-weight:740;letter-spacing:-.055em;line-height:1.04}
+h3{color:#f2f6ff;font-weight:700;letter-spacing:-.035em}
+.intro{align-items:center;margin-bottom:34px}
+.intro>div:first-child>p:last-child{color:#98a6ba}
+.ghost-button{background:#101722;border-color:#29364a;color:#b5c0d2;transition:background .18s,border-color .18s,color .18s}
+.ghost-button:hover{background:#172235;border-color:#45628e;color:#fff}
+.progress-card{background:linear-gradient(145deg,#111a28,#0e141e);border-color:#253249;box-shadow:0 12px 35px rgba(0,0,0,.18)}
+.progress-card span{color:#9aa8bd}
+.progress-card strong{color:#83adff}
+.progress{background:#222e40}
+.progress i{background:linear-gradient(90deg,#3e7af0,#75a7ff);box-shadow:0 0 14px rgba(76,139,255,.55)}
+.workspace{gap:30px}
+.card{background:linear-gradient(145deg,rgba(17,24,35,.98),rgba(13,19,29,.98));border-color:#263244;border-radius:18px;padding:30px;box-shadow:0 16px 40px rgba(0,0,0,.2)}
+.section-heading{margin-bottom:25px}
+.section-heading h3{font-size:21px}
+.section-heading p{color:#8796ac}
+.number{background:#15294a;color:#8db5ff;border:1px solid #264477;border-radius:9px}
+label{color:#c5cede;font-size:13px;font-weight:650;letter-spacing:.01em}
+input,select,textarea{background:#0a1019;border-color:#2b3749;color:#eef3fc;border-radius:10px;padding:12px 14px;box-shadow:inset 0 1px 0 rgba(255,255,255,.018)}
+input::placeholder,textarea::placeholder{color:#65748a;opacity:1}
+input:hover,select:hover,textarea:hover{border-color:#3a4b65}
+input:focus,select:focus,textarea:focus{background:#0c1420;border-color:#6498ff;box-shadow:0 0 0 3px rgba(79,140,255,.16)}
+select option{background:#101722;color:#edf3ff}
+.primary-button{background:linear-gradient(100deg,#2869eb,#4f8cff);box-shadow:0 12px 28px rgba(35,99,226,.27);transition:transform .18s,box-shadow .18s,filter .18s}
+.primary-button:hover{background:linear-gradient(100deg,#3779f6,#69a0ff);box-shadow:0 15px 32px rgba(35,99,226,.36);transform:translateY(-1px)}
+.preview-column{width:450px}
+.preview-header h3{color:#f2f6ff}
+.preview-header .eyebrow{color:#78a8ff}
+.status-dot{color:#a9b6ca;background:#131c29;border:1px solid #2a374a}
+.document-preview{background:#fff!important;color:#000!important;box-shadow:0 22px 65px rgba(0,0,0,.4)!important}
+.document-preview h4,.document-preview .doc-title,.document-preview .doc-title span,.document-preview p,.document-preview b,.document-preview small{color:#000!important}
+.document-preview .doc-title small{color:#000!important}
+.document-preview .doc-block p{color:#000!important}
+.toast{background:#172234;border:1px solid #344765;box-shadow:0 12px 35px rgba(0,0,0,.35)}
+@media(max-width:980px){.shell{padding:28px 20px 56px}.topbar{margin-bottom:34px}.workspace{gap:22px}.preview-column{width:auto}.intro{align-items:flex-start}.progress-card{width:100%}}
+@media(max-width:560px){.shell{padding:20px 14px 42px}.topbar{margin-bottom:28px}.card{padding:21px 18px;border-radius:15px}.section-heading h3{font-size:19px}.document-preview{padding:20px}.ghost-button{background:#101722}}
+
+/* Refined interface typography; keep the printable report in Cambria. */
+body{font-family:"DM Sans", "Segoe UI", sans-serif;letter-spacing:.008em;font-size:15px}
+h1,h2,h3,.brand-mark,.number,.primary-button{font-family:"Outfit","DM Sans",sans-serif}
+h1{font-size:20px;font-weight:650;letter-spacing:-.04em}
+h2{font-size:clamp(34px,3.4vw,46px);font-weight:650;letter-spacing:-.055em;line-height:1.02;color:#f5f8ff;background:linear-gradient(105deg,#f6f8ff 12%,#d9e6ff 62%,#87b1ff);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+h3{font-weight:650;letter-spacing:-.035em}
+.eyebrow{font-family:"DM Sans","Segoe UI",sans-serif;font-size:10px;font-weight:700;letter-spacing:.2em}
+.intro>div:first-child>p:last-child{font-size:14px;letter-spacing:.005em}
+.brand-mark{font-size:16px;letter-spacing:-.07em}
+.section-heading h3{font-size:22px}
+.section-heading p{font-size:13px;letter-spacing:.01em}
+.number{font-size:11px;font-weight:700;letter-spacing:.035em}
+label{font-family:"DM Sans","Segoe UI",sans-serif;font-size:13px;font-weight:650;letter-spacing:.005em}
+input,select,textarea{font-family:"DM Sans","Segoe UI",sans-serif;font-size:14px;font-weight:500;letter-spacing:.005em}
+input::placeholder,textarea::placeholder{font-weight:500;letter-spacing:.01em}
+.primary-button{font-size:15px;font-weight:650;letter-spacing:.015em}
+.ghost-button,.progress-card,.status-dot{font-family:"DM Sans","Segoe UI",sans-serif}
+.progress-card span,.status-dot{letter-spacing:.025em}
+.preview-header h3{font-size:20px}
+.document-preview,.document-preview *{font-family:Cambria,Georgia,serif!important}
+.code-status{display:block;margin-top:7px;font-size:11px;font-weight:500;line-height:1.4;color:#9aa8bd}
+.code-status.is-success{color:#60d6a4}
+.code-status.is-warning{color:#f2c56f}
+.code-status.is-error{color:#ff8a8a}
+@media(max-width:560px){
+  .document-preview{padding:14px!important}
+  .document-preview .doc-table > .general-row{grid-template-columns:minmax(0,.92fr) minmax(0,1.4fr) minmax(0,.92fr) minmax(0,1.4fr)!important}
+  .document-preview .doc-table > .wide-row{grid-template-columns:minmax(0,.95fr) minmax(0,3.05fr)!important}
+  .document-preview .doc-table > .general-row > div{min-width:0;padding:4px 3px!important;font-size:7.5pt!important;overflow-wrap:anywhere;word-break:normal}
+  .document-preview .doc-table .doc-label{font-size:7.5pt!important;overflow-wrap:anywhere;word-break:normal}
+  .document-preview .doc-table .doc-value{font-size:8pt!important;padding:4px 3px!important}
+  .document-preview .doc-table > .general-row{border-bottom:1px solid #000!important}
+  .document-preview .doc-table > .general-row:last-child{border-bottom:0!important}
+}
