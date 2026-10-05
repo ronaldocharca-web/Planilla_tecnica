@@ -62,7 +62,7 @@ const labels = {
   tipoActivo: '1.1. Tipo Activo', procesador: '1.2. Procesador', marca: '1.3. Marca',
   modelo: '1.4. Modelo', serie: '1.5. S/N', tecnico: '1.6. Realizado por',
   almacenamiento: '1.7. Almacenamiento', ram: '1.8. Memoria RAM', usuario: '1.9. Usuario',
-  area: '2.0. Área', codigoRevision: '2.1. Código de revisión'
+  ubicacion: '2.0. Ubicación', codigoInventario: '2.1. Código de Inventario', codigoRevision: '2.2. Código de revisión'
 };
 
 function currentData() {
@@ -88,9 +88,9 @@ function updatePreview() {
 
   const previewRows = [
     { left: ['I.1. Tipo Activo', data.tipoActivo], right: ['1.9 Usuario', data.usuario] },
-    { left: ['I.2. Procesador', data.procesador], right: ['2.0 Área', data.area] },
-    { left: ['I.3. Marca', data.marca], right: ['2.1 Código de revisión', data.codigoRevision] },
-    { wide: ['I.4. Modelo', data.modelo] },
+    { left: ['I.2. Procesador', data.procesador], right: ['2.0 Ubicación', data.ubicacion] },
+    { left: ['I.3. Marca', data.marca], right: ['2.1 Código de Inventario', data.codigoInventario] },
+    { left: ['I.4. Modelo', data.modelo], right: ['2.2 Código de revisión', data.codigoRevision] },
     { wide: ['I.5. S/N', data.serie] }, { wide: ['I.6. Realizado por', data.tecnico] },
     { wide: ['I.7. Almacenamiento', data.almacenamiento] }, { wide: ['I.8. Memoria RAM', data.ram] }
   ];
@@ -195,41 +195,15 @@ async function downloadWord() {
   const general = actualRows(tables[0]);
   const values = [
     ['Tipo Activo', data.tipoActivo, '1.9 Usuario', data.usuario],
-    ['Procesador', data.procesador, '2.0 Área', data.area],
-    ['Marca', data.marca, '2.1 Código de revisión', data.codigoRevision],
-    ['Modelo', data.modelo, '', ''],
+    ['Procesador', data.procesador, '2.0 Ubicación', data.ubicacion],
+    ['Marca', data.marca, '2.1 Código de Inventario', data.codigoInventario],
+    ['Modelo', data.modelo, '2.2 Código de revisión', data.codigoRevision],
     ['S/N', data.serie], ['Realizado por', data.tecnico],
     ['Almacenamiento', data.almacenamiento], ['Memoria RAM', data.ram]
   ];
   values.forEach((fields, rowIndex) => fields.forEach((text, cellIndex) => {
     if (general[rowIndex]?.[cellIndex]) replaceWordCell(general[rowIndex][cellIndex], text);
   }));
-  const modelValueCell = general[3]?.[1];
-  if (modelValueCell && general[3]?.[3]) {
-    const properties = directWordChildren(modelValueCell, 'tcPr')[0];
-    if (properties) {
-      const cellWidth = directWordChildren(properties, 'tcW')[0];
-      if (cellWidth) cellWidth.setAttributeNS(WORD_NS, 'w:w', '7300');
-      let span = directWordChildren(properties, 'gridSpan')[0];
-      if (!span) { span = modelValueCell.ownerDocument.createElementNS(WORD_NS, 'w:gridSpan'); properties.insertBefore(span, properties.children[1] || null); }
-      span.setAttributeNS(WORD_NS, 'w:val', '3');
-    }
-    const cellProperties = directWordChildren(modelValueCell, 'tcPr')[0];
-    if (cellProperties) {
-      let borders = directWordChildren(cellProperties, 'tcBorders')[0];
-      if (!borders) { borders = modelValueCell.ownerDocument.createElementNS(WORD_NS, 'w:tcBorders'); cellProperties.appendChild(borders); }
-      for (const side of ['top', 'left', 'bottom', 'right']) {
-        let edge = directWordChildren(borders, side)[0];
-        if (!edge) { edge = modelValueCell.ownerDocument.createElementNS(WORD_NS, `w:${side}`); borders.appendChild(edge); }
-        edge.setAttributeNS(WORD_NS, 'w:val', 'single');
-        edge.setAttributeNS(WORD_NS, 'w:sz', '4');
-        edge.setAttributeNS(WORD_NS, 'w:space', '0');
-        edge.setAttributeNS(WORD_NS, 'w:color', '000000');
-      }
-    }
-    general[3][2].remove();
-    general[3][3].remove();
-  }
   const diagnostic = actualRows(tables[1]);
   replaceWordCell(diagnostic[0][0], 'Problema reportado');
   replaceWordCell(diagnostic[0][1], data.problema);

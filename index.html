@@ -26,9 +26,10 @@
           <section class="card"><div class="section-heading"><span class="number">01</span><div><h3>Datos generales</h3><p>Identificación del equipo y del responsable.</p></div></div><div class="field-grid">
             <label>Tipo de activo<input name="tipoActivo" placeholder="Laptop, PC, impresora..." /></label>
             <label>Usuario<input name="usuario" placeholder="Nombre del usuario" /></label>
-            <label>Área<input name="area" placeholder="Sistemas, Administración..." /></label>
+            <label>Ubicación<input name="ubicacion" placeholder="Av. Carretera Turismo, aula..." /></label>
             <label>Marca<input name="marca" placeholder="Dell, HP, Lenovo..." /></label>
             <label>Modelo<input name="modelo" placeholder="Modelo del equipo" /></label>
+            <label>Código de inventario<input name="codigoInventario" placeholder="Ej. INV-001" /></label>
             <label>Código de revisión<input name="codigoRevision" placeholder="Ej. CT-MNT-2026-001" required /><small class="code-status" id="codeStatus" role="status"></small></label>
             <label>Número de serie<input name="serie" placeholder="S/N" /></label>
             <label>Procesador<input name="procesador" placeholder="Intel Core i7..." /></label>
@@ -57,7 +58,7 @@
         <p class="manual-lead">Completa los datos del equipo y del mantenimiento. La página mantiene una vista previa y prepara un documento Word con la plantilla institucional.</p>
         <ol class="manual-steps">
           <li><span class="manual-step-number">01</span><div><h3>Espera el código de revisión</h3><p>Con Supabase conectado, el código se asigna solo. Espera el mensaje <strong>Código único asignado globalmente</strong> antes de descargar. No lo cambies: identifica este informe.</p></div></li>
-          <li><span class="manual-step-number">02</span><div><h3>Identifica el equipo</h3><p>Ingresa tipo de activo, usuario, área, marca, modelo, serie y procesador. En RAM escribe solo la cantidad en GB, por ejemplo <strong>8</strong>.</p></div></li>
+          <li><span class="manual-step-number">02</span><div><h3>Identifica el equipo</h3><p>Ingresa tipo de activo, usuario, ubicación (por ejemplo, Av. Carretera Turismo), marca, modelo, código de inventario, serie y procesador. En RAM escribe solo la cantidad en GB, por ejemplo <strong>8</strong>.</p></div></li>
           <li><span class="manual-step-number">03</span><div><h3>Describe el almacenamiento</h3><p>Selecciona HDD, SSD SATA, SSD NVMe, SSHD, eMMC u otro. Escribe la capacidad, por ejemplo <strong>512</strong>, y elige GB o TB.</p></div></li>
           <li><span class="manual-step-number">04</span><div><h3>Registra el trabajo realizado</h3><p>Completa problema reportado, pruebas, conclusiones, recomendaciones y observaciones. Puedes escribir varias líneas. Añade el técnico, la fecha y los nombres para las firmas.</p></div></li>
           <li><span class="manual-step-number">05</span><div><h3>Revisa la vista previa</h3><p>La hoja se actualiza mientras escribes. Comprueba los datos, la fecha, el código y los textos largos. El porcentaje indica cuántos campos tienen contenido; no es necesario llegar a 100% para descargar.</p></div></li>
