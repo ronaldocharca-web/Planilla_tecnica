@@ -10,18 +10,19 @@ const counterUrl = String(counterConfig.url || '').trim().replace(/\/+$/, '');
 const counterKey = String(counterConfig.apiKey || '').trim();
 const globalCounterConfigured = /^https:\/\/[a-z\d-]+\.supabase\.co$/i.test(counterUrl)
   && counterKey.length > 10 && !/YOUR_|TU_CLAVE|PON_AQUI/i.test(counterKey);
-let reportCodeReady = false;
+let isDownloading = false;
+let previewRequestId = 0;
 
 function setCodeStatus(message, state = '') {
   codeStatus.textContent = message;
   codeStatus.className = `code-status${state ? ` is-${state}` : ''}`;
 }
 
-async function reserveReportCode() {
+async function requestReportNumber(functionName) {
   const year = new Date().getFullYear();
   const headers = { 'Content-Type': 'application/json', apikey: counterKey };
   if (counterKey.startsWith('eyJ')) headers.Authorization = `Bearer ${counterKey}`;
-  const response = await fetch(`${counterUrl}/rest/v1/rpc/next_report_number`, {
+  const response = await fetch(`${counterUrl}/rest/v1/rpc/${functionName}`, {
     method: 'POST', headers, body: JSON.stringify({ p_year: year })
   });
   if (!response.ok) throw new Error(`Supabase respondió ${response.status}`);
@@ -30,29 +31,31 @@ async function reserveReportCode() {
   return `CT-MNT-${year}-${String(sequence).padStart(3, '0')}`;
 }
 
-async function assignNextReportCode() {
-  reportCodeReady = false;
-  codeField.value = '';
-  codeField.readOnly = true;
-  submitButton.disabled = true;
-  setCodeStatus('Reservando un código global…');
-  updatePreview();
+async function showNextReportCode(lastDownloadedCode = '') {
+  const requestId = ++previewRequestId;
+  setCodeStatus('Consultando el próximo código…');
   try {
-    codeField.value = await reserveReportCode();
-    reportCodeReady = true;
-    setCodeStatus('Código único asignado globalmente.', 'success');
-  } catch (error) {
-    setCodeStatus('No se pudo conectar con el contador global. No descargues con un código manual.', 'error');
-    showToast('No se pudo reservar el código global. Revisa la configuración de Supabase.');
-    throw error;
-  } finally {
-    submitButton.disabled = !reportCodeReady;
+    const nextCode = await requestReportNumber('peek_report_number');
+    if (requestId !== previewRequestId || isDownloading) return;
+    codeField.value = nextCode;
     updatePreview();
+    setCodeStatus(lastDownloadedCode
+      ? `Word descargado con ${lastDownloadedCode}. Próximo código: ${nextCode}.`
+      : 'Próximo código disponible. Se confirma al descargar el Word.', 'success');
+  } catch (error) {
+    if (requestId !== previewRequestId || isDownloading) return;
+    codeField.value = lastDownloadedCode;
+    updatePreview();
+    setCodeStatus(lastDownloadedCode
+      ? `Word descargado con ${lastDownloadedCode}. No se pudo consultar el siguiente; revisa Supabase y la conexión.`
+      : 'No se pudo consultar el próximo código. Revisa Supabase y la conexión.', 'error');
   }
 }
 
 if (globalCounterConfigured) {
-  void assignNextReportCode().catch(() => {});
+  codeField.readOnly = true;
+  codeField.required = false;
+  void showNextReportCode();
 } else {
   codeField.readOnly = false;
   setCodeStatus('Contador global sin configurar; los códigos escritos manualmente podrían repetirse.', 'warning');
@@ -231,7 +234,10 @@ async function downloadWord() {
   for (const paragraph of bodyParagraphs) {
     const textNode = paragraph.getElementsByTagNameNS(WORD_NS, 't')[0];
     const text = [...paragraph.getElementsByTagNameNS(WORD_NS, 't')].map(node => node.textContent).join('').trim();
-    if (textNode && headingMap.has(text)) {
+    if (textNode && /^INFORME T[ÉE]CNICO$/i.test(text)) {
+      textNode.textContent = 'REPORTE TÉCNICO';
+      [...paragraph.getElementsByTagNameNS(WORD_NS, 't')].slice(1).forEach(node => { node.textContent = ''; });
+    } else if (textNode && headingMap.has(text)) {
       textNode.textContent = headingMap.get(text);
       [...paragraph.getElementsByTagNameNS(WORD_NS, 't')].slice(1).forEach(node => { node.textContent = ''; });
       const run = textNode.parentElement;
@@ -249,7 +255,7 @@ async function downloadWord() {
         const textNodes = [...run.getElementsByTagNameNS(WORD_NS, 't')];
         const text = textNodes.map(node => node.textContent).join('');
         if (text.includes('INFORME T')) {
-          textNodes[0].textContent = 'INFORME TÉCNICO';
+          textNodes[0].textContent = 'REPORTE TÉCNICO';
           textNodes.slice(1).forEach(node => { node.textContent = ''; });
           const runProperties = directWordChildren(run, 'rPr')[0];
           if (runProperties) {
@@ -265,28 +271,43 @@ async function downloadWord() {
     zip.file('word/header1.xml', new XMLSerializer().serializeToString(headerXml));
   }
   const blob = await zip.generateAsync({ type: 'blob', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
-  const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `Informe_Tecnico_${data.codigoRevision || 'nuevo'}.docx`; link.click();
-  setTimeout(() => URL.revokeObjectURL(link.href), 1000); showToast('Informe Word creado desde tu plantilla');
+  const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `Reporte_Tecnico_${data.codigoRevision || 'nuevo'}.docx`; link.click();
+  setTimeout(() => URL.revokeObjectURL(link.href), 1000); showToast('Reporte Word creado desde tu plantilla');
 }
 
 function showToast(text) { const toast = document.querySelector('#toast'); toast.textContent = text; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 3200); }
 form.addEventListener('submit', async event => {
   event.preventDefault();
-  if (!codeField.value.trim()) { showToast('Escribe un código de revisión antes de descargar.'); return; }
-  if (globalCounterConfigured && !reportCodeReady) { showToast('Espera a que se reserve un código global.'); return; }
+  if (isDownloading) return;
+  if (!globalCounterConfigured && !codeField.value.trim()) { showToast('Escribe un código de revisión antes de descargar.'); return; }
+  previewRequestId++;
+  isDownloading = true;
   submitButton.disabled = true;
+  let downloadedCode = '';
   try {
+    if (globalCounterConfigured) {
+      setCodeStatus('Confirmando el código global…');
+      codeField.value = await requestReportNumber('next_report_number');
+      updatePreview();
+    }
     await downloadWord();
+    if (globalCounterConfigured) {
+      downloadedCode = codeField.value;
+      setCodeStatus(`Word descargado con ${downloadedCode}. Consultando el próximo código…`, 'success');
+    }
   } catch (error) {
-    showToast('No se pudo generar el Word. Revisa que la página esté abierta desde el servidor.');
+    if (globalCounterConfigured) {
+      setCodeStatus('No se pudo completar la descarga. Revisa la conexión e inténtalo de nuevo.', 'error');
+    }
+    showToast('No se pudo generar el Word. Revisa la conexión y la plantilla.');
+  } finally {
+    isDownloading = false;
     submitButton.disabled = false;
-    return;
-  }
-  if (globalCounterConfigured) {
-    await assignNextReportCode().catch(() => {});
-  } else {
-    submitButton.disabled = false;
+    if (downloadedCode) void showNextReportCode(downloadedCode);
   }
 });
-form.elements.fecha.value = new Date().toISOString().slice(0, 10); updatePreview();
+form.elements.fecha.value = new Date().toISOString().slice(0, 10);
+document.querySelector('.doc-title span').textContent = 'REPORTE TÉCNICO';
+document.querySelector('.preview-header h3').textContent = 'Reporte técnico';
+updatePreview();
 document.querySelectorAll('.document-preview h4').forEach((heading, index) => { heading.textContent = ['I. Datos Generales', 'II. Diagnóstico', 'III. Resultados'][index] || heading.textContent; });

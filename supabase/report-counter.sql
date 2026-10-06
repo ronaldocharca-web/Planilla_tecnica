@@ -33,3 +33,28 @@ $$;
 
 revoke all on function public.next_report_number(integer) from public;
 grant execute on function public.next_report_number(integer) to anon, authenticated;
+
+-- Muestra el próximo número sin reservarlo ni incrementar el contador.
+-- La asignación definitiva sigue ocurriendo en next_report_number al descargar.
+create or replace function public.peek_report_number(p_year integer)
+returns bigint
+language plpgsql
+stable
+security definer
+set search_path = pg_catalog, public
+as $$
+begin
+  if p_year < 2000 or p_year > 9999 then
+    raise exception 'Año inválido';
+  end if;
+
+  return coalesce((
+    select last_number + 1
+    from public.report_code_counters
+    where report_year = p_year
+  ), 1);
+end;
+$$;
+
+revoke all on function public.peek_report_number(integer) from public;
+grant execute on function public.peek_report_number(integer) to anon, authenticated;

@@ -8,8 +8,9 @@
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231b5cff'/%3E%3Cpath d='M17 15h22l8 8v26H17z' fill='none' stroke='white' stroke-width='4'/%3E%3Cpath d='M38 15v10h9M24 35h16M24 43h12' stroke='white' stroke-width='4' fill='none'/%3E%3C/svg%3E" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400..700&family=Outfit:wght@400..800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="neo.css" />
     <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   </head>
   <body>
@@ -57,15 +58,15 @@
         <header class="manual-header"><div><p class="eyebrow blue">GUÍA DE USO</p><h2 id="manualTitle">Cómo crear un informe</h2></div><button class="manual-close" id="closeManualButton" type="button" popovertarget="manualDialog" popovertargetaction="hide" aria-label="Cerrar manual">×</button></header>
         <p class="manual-lead">Completa los datos del equipo y del mantenimiento. La página mantiene una vista previa y prepara un documento Word con la plantilla institucional.</p>
         <ol class="manual-steps">
-          <li><span class="manual-step-number">01</span><div><h3>Espera el código de revisión</h3><p>Con Supabase conectado, el código se asigna solo. Espera el mensaje <strong>Código único asignado globalmente</strong> antes de descargar. No lo cambies: identifica este informe.</p></div></li>
+          <li><span class="manual-step-number">01</span><div><h3>Revisa el próximo código</h3><p>Al abrir la página se muestra el próximo código disponible. Puedes llenar el formulario sin reservarlo; el código se confirma al pulsar <strong>Descargar Word</strong>.</p></div></li>
           <li><span class="manual-step-number">02</span><div><h3>Identifica el equipo</h3><p>Ingresa tipo de activo, usuario, ubicación (por ejemplo, Av. Carretera Turismo), marca, modelo, código de inventario, serie y procesador. En RAM escribe solo la cantidad en GB, por ejemplo <strong>8</strong>.</p></div></li>
           <li><span class="manual-step-number">03</span><div><h3>Describe el almacenamiento</h3><p>Selecciona HDD, SSD SATA, SSD NVMe, SSHD, eMMC u otro. Escribe la capacidad, por ejemplo <strong>512</strong>, y elige GB o TB.</p></div></li>
           <li><span class="manual-step-number">04</span><div><h3>Registra el trabajo realizado</h3><p>Completa problema reportado, pruebas, conclusiones, recomendaciones y observaciones. Puedes escribir varias líneas. Añade el técnico, la fecha y los nombres para las firmas.</p></div></li>
           <li><span class="manual-step-number">05</span><div><h3>Revisa la vista previa</h3><p>La hoja se actualiza mientras escribes. Comprueba los datos, la fecha, el código y los textos largos. El porcentaje indica cuántos campos tienen contenido; no es necesario llegar a 100% para descargar.</p></div></li>
-          <li><span class="manual-step-number">06</span><div><h3>Descarga el informe</h3><p>Pulsa <strong>Descargar Word</strong>. Se guardará un archivo DOCX con el nombre del código de revisión. Ábrelo en Word o LibreOffice para revisar el documento final.</p></div></li>
-          <li><span class="manual-step-number">07</span><div><h3>Empieza otro informe</h3><p>Tras descargar, se reserva automáticamente el siguiente código. <strong>Limpiar formulario</strong> borra los demás datos pero conserva el código del informe actual.</p></div></li>
+          <li><span class="manual-step-number">06</span><div><h3>Revisa el Word</h3><p>El archivo se descarga como <strong>Reporte_Tecnico_CODIGO.docx</strong> y dentro lleva el título <strong>REPORTE TÉCNICO</strong>.</p></div></li>
+          <li><span class="manual-step-number">07</span><div><h3>Empieza otro reporte</h3><p>Después de descargar se muestra el siguiente código disponible. <strong>Limpiar formulario</strong> borra los demás datos y conserva ese código visible.</p></div></li>
         </ol>
-        <section class="manual-notes"><h3>Ten en cuenta</h3><ul><li>La página genera Word; no genera PDF.</li><li>Los informes no se guardan en una cuenta ni en Supabase. La descarga queda en tu dispositivo.</li><li>Los códigos se reservan al abrir la página. Si cierras o recargas antes de descargar, puede quedar un número sin usar.</li><li>Si aparece un error al reservar el código, revisa tu conexión y vuelve a cargar la página. No inventes un código cuando el contador global está configurado.</li></ul></section>
+        <section class="manual-notes"><h3>Ten en cuenta</h3><ul><li>La página genera Word; no genera PDF.</li><li>Los informes no se guardan en una cuenta ni en Supabase. La descarga queda en tu dispositivo.</li><li>Refrescar o abrir la página no incrementa el contador global.</li><li>Si otra persona descarga antes que tú, el código visible puede cambiar al confirmar la descarga. El Word llevará siempre el código realmente asignado.</li><li>Si aparece un error al consultar o confirmar el código, revisa tu conexión y la configuración de Supabase.</li></ul></section>
         <footer class="manual-footer"><span>¿Listo para completar el formulario?</span><button class="primary-button" id="manualDoneButton" type="button" popovertarget="manualDialog" popovertargetaction="hide">Entendido</button></footer>
       </div>
     </div>
