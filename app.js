@@ -1,5 +1,6 @@
 const form = document.querySelector('#reportForm');
 const fields = [...form.querySelectorAll('input, textarea, select')];
+const requiredFields = fields.filter(field => field.name);
 const value = name => form.elements[name]?.value.trim() || '';
 const textOr = (value, text) => value || text;
 const codeField = form.elements.codigoRevision;
@@ -12,6 +13,11 @@ const globalCounterConfigured = /^https:\/\/[a-z\d-]+\.supabase\.co$/i.test(coun
   && counterKey.length > 10 && !/YOUR_|TU_CLAVE|PON_AQUI/i.test(counterKey);
 let isDownloading = false;
 let previewRequestId = 0;
+
+requiredFields.forEach(field => {
+  field.required = true;
+  field.setAttribute('aria-required', 'true');
+});
 
 function setCodeStatus(message, state = '') {
   codeStatus.textContent = message;
@@ -38,6 +44,7 @@ async function showNextReportCode(lastDownloadedCode = '') {
     const nextCode = await requestReportNumber('peek_report_number');
     if (requestId !== previewRequestId || isDownloading) return;
     codeField.value = nextCode;
+    clearFieldError(codeField);
     updatePreview();
     setCodeStatus(lastDownloadedCode
       ? `Word descargado con ${lastDownloadedCode}. Próximo código: ${nextCode}.`
@@ -45,6 +52,7 @@ async function showNextReportCode(lastDownloadedCode = '') {
   } catch (error) {
     if (requestId !== previewRequestId || isDownloading) return;
     codeField.value = lastDownloadedCode;
+    if (lastDownloadedCode) clearFieldError(codeField);
     updatePreview();
     setCodeStatus(lastDownloadedCode
       ? `Word descargado con ${lastDownloadedCode}. No se pudo consultar el siguiente; revisa Supabase y la conexión.`
@@ -54,7 +62,6 @@ async function showNextReportCode(lastDownloadedCode = '') {
 
 if (globalCounterConfigured) {
   codeField.readOnly = true;
-  codeField.required = false;
   void showNextReportCode();
 } else {
   codeField.readOnly = false;
@@ -108,12 +115,45 @@ function updatePreview() {
   document.querySelector('#previewFirmaSupervisor').textContent = data.firmaSupervisor || 'VoBo Supervisor';
 }
 
-fields.forEach(field => field.addEventListener('input', updatePreview));
+function clearFieldError(field) {
+  field.setCustomValidity('');
+  field.removeAttribute('aria-invalid');
+}
+
+function validateCompleteForm() {
+  requiredFields.forEach(field => {
+    const isEmpty = !field.value.trim();
+    field.setCustomValidity(isEmpty ? 'Completa este campo antes de descargar el Word.' : '');
+    if (isEmpty) field.setAttribute('aria-invalid', 'true');
+    else field.removeAttribute('aria-invalid');
+  });
+
+  if (form.checkValidity()) {
+    form.classList.remove('validation-attempted');
+    return true;
+  }
+
+  form.classList.add('validation-attempted');
+  const firstInvalid = requiredFields.find(field => !field.checkValidity());
+  if (firstInvalid) {
+    firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    firstInvalid.reportValidity();
+  }
+  showToast('Completa todos los campos obligatorios antes de descargar el Word.');
+  return false;
+}
+
+fields.forEach(field => field.addEventListener('input', () => {
+  clearFieldError(field);
+  updatePreview();
+}));
 document.querySelector('#clearButton').addEventListener('click', () => {
   const reservedCode = globalCounterConfigured ? codeField.value : '';
   form.reset();
   form.elements.fecha.value = new Date().toISOString().slice(0, 10);
   if (globalCounterConfigured) codeField.value = reservedCode;
+  form.classList.remove('validation-attempted');
+  requiredFields.forEach(clearFieldError);
   updatePreview();
 });
 
@@ -279,7 +319,7 @@ function showToast(text) { const toast = document.querySelector('#toast'); toast
 form.addEventListener('submit', async event => {
   event.preventDefault();
   if (isDownloading) return;
-  if (!globalCounterConfigured && !codeField.value.trim()) { showToast('Escribe un código de revisión antes de descargar.'); return; }
+  if (!validateCompleteForm()) return;
   previewRequestId++;
   isDownloading = true;
   submitButton.disabled = true;

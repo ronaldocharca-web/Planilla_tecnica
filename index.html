@@ -23,7 +23,7 @@
       <section class="intro"><div><p class="eyebrow blue">NUEVO INFORME</p><h2>Documenta el estado de cada equipo</h2><p>Completa los datos y descarga un informe Word con el formato técnico de tu plantilla.</p></div><div class="progress-card"><span>Progreso</span><strong id="progressText">0%</strong><div class="progress"><i id="progressBar"></i></div></div></section>
 
       <div class="workspace">
-        <form id="reportForm" class="form-column">
+        <form id="reportForm" class="form-column" novalidate>
           <section class="card"><div class="section-heading"><span class="number">01</span><div><h3>Datos generales</h3><p>Identificación del equipo y del responsable.</p></div></div><div class="field-grid">
             <label>Tipo de activo<input name="tipoActivo" placeholder="Laptop, PC, impresora..." /></label>
             <label>Usuario<input name="usuario" placeholder="Nombre del usuario" /></label>
@@ -62,7 +62,7 @@
           <li><span class="manual-step-number">02</span><div><h3>Identifica el equipo</h3><p>Ingresa tipo de activo, usuario, ubicación (por ejemplo, Av. Carretera Turismo), marca, modelo, código de inventario, serie y procesador. En RAM escribe solo la cantidad en GB, por ejemplo <strong>8</strong>.</p></div></li>
           <li><span class="manual-step-number">03</span><div><h3>Describe el almacenamiento</h3><p>Selecciona HDD, SSD SATA, SSD NVMe, SSHD, eMMC u otro. Escribe la capacidad, por ejemplo <strong>512</strong>, y elige GB o TB.</p></div></li>
           <li><span class="manual-step-number">04</span><div><h3>Registra el trabajo realizado</h3><p>Completa problema reportado, pruebas, conclusiones, recomendaciones y observaciones. Puedes escribir varias líneas. Añade el técnico, la fecha y los nombres para las firmas.</p></div></li>
-          <li><span class="manual-step-number">05</span><div><h3>Revisa la vista previa</h3><p>La hoja se actualiza mientras escribes. Comprueba los datos, la fecha, el código y los textos largos. El porcentaje indica cuántos campos tienen contenido; no es necesario llegar a 100% para descargar.</p></div></li>
+          <li><span class="manual-step-number">05</span><div><h3>Revisa la vista previa</h3><p>La hoja se actualiza mientras escribes. Comprueba los datos, la fecha, el código y los textos largos. Todos los campos son obligatorios y el progreso debe llegar al 100% para descargar.</p></div></li>
           <li><span class="manual-step-number">06</span><div><h3>Revisa el Word</h3><p>El archivo se descarga como <strong>Reporte_Tecnico_CODIGO.docx</strong> y dentro lleva el título <strong>REPORTE TÉCNICO</strong>.</p></div></li>
           <li><span class="manual-step-number">07</span><div><h3>Empieza otro reporte</h3><p>Después de descargar se muestra el siguiente código disponible. <strong>Limpiar formulario</strong> borra los demás datos y conserva ese código visible.</p></div></li>
         </ol>

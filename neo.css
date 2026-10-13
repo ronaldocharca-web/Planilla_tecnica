@@ -227,6 +227,14 @@ input:focus, select:focus, textarea:focus {
   border-color: var(--neo-ink);
   box-shadow: 5px 5px 0 var(--neo-yellow);
 }
+.validation-attempted input:invalid,
+.validation-attempted select:invalid,
+.validation-attempted textarea:invalid,
+[aria-invalid="true"] {
+  background: #fff0f1;
+  border-color: #bd1e2d;
+  box-shadow: 4px 4px 0 #ff7f8d;
+}
 input[readonly] { background: #fff5b0; font-weight: 700; }
 select option { background: #fff; color: var(--neo-ink); }
 textarea { min-height: 90px; }
